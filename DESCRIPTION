@@ -18,4 +18,5 @@ Imports:
   purrr,
   haven,
   labelled,
-  naniar
+  naniar,
+  rstudioapi
