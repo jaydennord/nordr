@@ -20,11 +20,12 @@ describe <- function(
   )
 ) {
 
+  grps <- group_vars(.data)
 
   quantitative <- .data %>%
-    select(where(is.numeric)) %>%
+    select(any_of(grps), where(is.numeric)) %>%
     {
-      if (ncol(.) == 0) {
+      if (ncol(.) == length(grps)) {
         NULL
       } else {
         (.) %>%
@@ -35,33 +36,38 @@ describe <- function(
           pivot_longer(
             cols = c(everything(), -any_of(group_vars(.data))),
             names_pattern = paste0("^(.*)_(", paste(names(.quant_funs), collapse = "|"), ")"),
-            names_to = c("Variable", ".value"),
-            # names_vary = "slowest"
+            names_to = c("Variable", ".value")
           )
       }
     }
 
 
-  categorical <- .data %>%
-    select(where(is.character), where(is.factor)) %>%
-    {
-      if (ncol(.) == 0) {
-        NULL
-      } else {
-        (.) %>%
-          summarize(across(
-            .cols = everything(),
-            ~ list(janitor::tabyl(.) %>% rename(Category = 1))
-          )) %>%
-          pivot_longer(
-            cols = c(everything(), -any_of(group_vars(.data))),
-            names_to = "Variable",
-            values_to = "value"
-          ) %>%
-          unnest(c(value))
-      }
-    }
+  i <- imap_lgl(.data, ~ (! .y %in% grps) & any(class(.x) %in% c("factor", "character", "logical")))
+  cat_cols <- names(.data)[i]
 
+  if (length(cat_cols) == 0) {
+    categorical <- NULL
+  } else {
+    categorical <- cat_cols %>%
+      set_names() %>%
+      map_dfr(.id = "Variable", ~ {
+
+        .data %>%
+          count(!!! syms(grps), !! sym(.x), .drop = FALSE) %>%
+          rename(Category = all_of(.x)) %>%
+          mutate(
+            perc = n / sum(n),
+            valid_perc = ifelse(
+              is.na(Category),
+              NA_real_,
+              n / sum(n[!is.na(Category)])
+            )
+          )
+
+
+      }) %>%
+      relocate(Variable, .after = all_of(grps))
+  }
 
   return(list(
 
