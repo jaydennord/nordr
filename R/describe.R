@@ -50,7 +50,7 @@ describe <- function(
   } else {
     categorical <- cat_cols %>%
       set_names() %>%
-      map_dfr(.id = "Variable", ~ {
+      map(~ {
 
         .data %>%
           count(!!! syms(grps), !! sym(.x), .drop = FALSE) %>%
@@ -65,8 +65,7 @@ describe <- function(
           )
 
 
-      }) %>%
-      relocate(Variable, .after = all_of(grps))
+      })
   }
 
   return(list(
