@@ -1,0 +1,4 @@
+name: Fancier Report
+description: >
+   Contains floating table of contents, collapsable code blocks.
+create_dir: FALSE
