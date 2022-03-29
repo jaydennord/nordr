@@ -39,3 +39,31 @@ knitr::opts_chunk$set(
 library(tidyverse)
 
 ```
+
+```{r any-easier, results = 'asis', message = FALSE, echo = FALSE}
+pwalk(d4, ~ {
+  
+  root <- ..1
+  dat <- ..3
+  has_subs <- ..2
+  
+  cat("##", root, "\n\n")
+  
+  pwalk(dat, ~ {
+    
+    question <- ..1
+    plot <- ..3
+    
+    if (has_subs) cat("###", question, "\n\n")
+    print(plot)
+    message("Printed ", root, " ", question) # to track progress when knitting
+    cat("\n\n")
+    
+  })
+  
+})
+```
+
+
+
+
