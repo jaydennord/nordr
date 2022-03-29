@@ -9,7 +9,7 @@
 #' @examples
 na_ifs <- function(x, ...) {
 
-  x[x %in% c(...)]
+  x[x %in% c(...)] <- NA
   x
 
 }
