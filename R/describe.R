@@ -65,7 +65,8 @@ describe <- function(
           )
 
 
-      })
+      }) %>%
+      bind_rows(.id = "Variable")
   }
 
   return(list(
