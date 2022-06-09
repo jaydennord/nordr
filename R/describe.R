@@ -35,7 +35,7 @@ describe <- function(
           ), .groups = "keep") %>%
           pivot_longer(
             cols = c(everything(), -any_of(group_vars(.data))),
-            names_pattern = paste0("^(.*)_(", paste(names(.quant_funs), collapse = "|"), ")"),
+            names_pattern = paste0("^(.*)_(", paste0(names(.quant_funs), "$", collapse = "|"), ")"),
             names_to = c("Variable", ".value")
           )
       }
