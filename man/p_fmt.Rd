@@ -9,13 +9,6 @@ p_fmt(p, digits = 3)
 \arguments{
 \item{digits}{}
 }
-\value{
-
-}
 \description{
 Title
-}
-\examples{
-
-
 }

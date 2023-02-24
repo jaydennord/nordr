@@ -9,9 +9,6 @@ all_combs(x)
 \arguments{
 \item{x}{}
 }
-\value{
-
-}
 \description{
 Title
 }

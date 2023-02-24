@@ -14,12 +14,6 @@ describe(
 \arguments{
 \item{.quant_funs}{}
 }
-\value{
-
-}
 \description{
 Title
-}
-\examples{
-
 }

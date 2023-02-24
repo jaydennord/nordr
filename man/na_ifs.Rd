@@ -9,9 +9,6 @@ na_ifs(x, ...)
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 Title
 }

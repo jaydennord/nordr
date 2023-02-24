@@ -9,9 +9,6 @@ make_ops(.data, names, op)
 \arguments{
 \item{op}{}
 }
-\value{
-
-}
 \description{
 Title
 }

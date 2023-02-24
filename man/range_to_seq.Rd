@@ -9,9 +9,6 @@ range_to_seq(x, sep = "-")
 \arguments{
 \item{sep}{}
 }
-\value{
-
-}
 \description{
 Title
 }

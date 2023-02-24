@@ -6,12 +6,6 @@
 \usage{
 list_funs_pkgs()
 }
-\value{
-
-}
 \description{
 Based on \code{NCmisc::list.functions.in.file}
-}
-\examples{
-
 }

@@ -9,9 +9,6 @@ nan_to_na(x)
 \arguments{
 \item{x}{}
 }
-\value{
-
-}
 \description{
 Title
 }

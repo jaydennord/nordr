@@ -2,19 +2,35 @@
 #' @importFrom dplyr select
 
 #' @export
-rename_with.list <- function(.data, .fn, ...) {
+list_rename_with <- function(.list, .fn, ...) {
 
   .fn <- rlang::as_function(.fn)
-  names <- .fn(names(.data), ...)
+  names <- .fn(names(.list), ...)
 
-  rlang::set_names(.data, names)
+  rlang::set_names(.list, names)
 
 }
 
 #' @export
-select.list <- function(.data, ...) {
+list_select <- function(.list, ...) {
 
-  pos <- tidyselect::eval_select(expr(c(...)), .data)
-  rlang::set_names(.data[pos], names(pos))
+  pos <- tidyselect::eval_select(
+    rlang::expr(c(...)),
+    .list
+  )
+
+  purrr::set_names(.list[pos], names(pos))
+
+}
+
+#' @export
+char_select <- function(.x, ...) {
+
+  pos <- tidyselect::eval_select(
+    rlang::expr(c(...)),
+    purrr::set_names(.x)
+  )
+
+  .x[pos]
 
 }
