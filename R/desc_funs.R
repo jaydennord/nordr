@@ -42,18 +42,19 @@
 #'
 #' @examples # no examples available
 #' @rdname desc_funs
-#' @importFrom rlang "!!" "!!!"
+
 desc_quant <- function(
     .data, ...,
     .by = NULL,
     .fns = .desc_quant_fns
 ) {
 
-  .by <- rlang::enquo(.by)
+  .by <- rlang::enexpr(.by)
+  grps <- if (is.null(.by)) character() else names(tidyselect::eval_select(.by, .data))
 
   .data |>
     dplyr::summarize(
-      .by = !! .by,
+      .by = dplyr::any_of(grps),
       dplyr::across(
         .cols = c(...),
         .fns  = .fns,
@@ -61,7 +62,7 @@ desc_quant <- function(
       )
     ) |>
     tidyr::pivot_longer(
-      cols = -!!.by,
+      cols = -dplyr::any_of(grps),
       names_sep = "<>",
       names_to = c("Variable", ".value")
     )
@@ -74,17 +75,22 @@ desc_quant <- function(
 #' @rdname desc_funs
 desc_freq <- function(.data, ..., .by = NULL) {
 
-  grps <- rlang::syms(colnames(.data)[tidyselect::eval_select(rlang::enexpr(.by) , .data)])
-  vars <- rlang::syms(colnames(.data)[tidyselect::eval_select(rlang::expr(c(...)), .data)]) |>
+  grps <- colnames(.data)[tidyselect::eval_select(rlang::enexpr(.by) , .data)]
+  vars <- colnames(.data)[tidyselect::eval_select(rlang::expr(c(...)), .data)] |>
     setdiff(grps) |>
     rlang::set_names()
 
-  dplyr::bind_rows(purrr::imap(vars, \(x, y) {
+  purrr::imap(vars, function(x, y) {
 
     .data |>
-      dplyr::count(!!! grps, Variable = y, Category = !! x, .drop = FALSE) |>
+      dplyr::count(
+        dplyr::pick(dplyr::any_of(grps)),
+        Variable = y,
+        Category = .data[[x]],
+        .drop = FALSE
+      ) |>
       dplyr::mutate(
-        .by = c(!!! grps),
+        .by = dplyr::any_of(grps),
         per = n / sum(n),
         valid_per = ifelse(
           is.na(Category),
@@ -93,6 +99,7 @@ desc_freq <- function(.data, ..., .by = NULL) {
         )
       )
 
-  }))
+  }) |>
+    dplyr::bind_rows()
 
 }

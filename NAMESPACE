@@ -3,5 +3,3 @@
 export(desc_freq)
 export(desc_quant)
 export(latest)
-importFrom(rlang,"!!!")
-importFrom(rlang,"!!")
